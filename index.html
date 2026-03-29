@@ -66,15 +66,14 @@ body{background:#05040f;font-family:'Cormorant Garamond',serif;min-height:100vh;
 .btn-threads::before{background:rgba(240,234,248,.04)}
 .btn-threads:hover{border-color:rgba(240,234,248,.38);box-shadow:0 0 14px rgba(240,234,248,.07)}
 .expand-inner{display:none;width:100%;border-top:1px solid rgba(199,125,255,.15)}
-.expand-row{display:flex;align-items:center;gap:.8rem;padding:.8rem 1.3rem;color:#c77dff;text-decoration:none;transition:background .2s}
+.expand-row{display:flex;align-items:center;gap:.8rem;padding:.8rem 1.3rem;color:#c77dff;text-decoration:none;transition:background .2s;cursor:pointer;background:none;border:none;width:100%}
 .expand-row:hover{background:rgba(199,125,255,.07)}
 .expand-row+.expand-row{border-top:1px solid rgba(199,125,255,.1)}
 .expand-row-icon{width:28px;text-align:center;font-size:1rem;flex-shrink:0}
-.expand-row-label{font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;flex:1}
-.expand-row-arrow{font-family:'Share Tech Mono',monospace;font-size:.7rem;opacity:.5}
+.expand-row-label{font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;flex:1;color:#c77dff}
+.expand-row-arrow{font-family:'Share Tech Mono',monospace;font-size:.7rem;opacity:.5;color:#c77dff}
 .footer-tag{margin-top:2.2rem;font-family:'Share Tech Mono',monospace;font-size:.58rem;letter-spacing:.18em;color:rgba(138,127,160,.28);text-transform:uppercase;text-align:center}
-
-/* ── MODAL ── */
+/* MODAL */
 #order-modal{display:none;position:fixed;inset:0;background:rgba(5,4,15,.92);z-index:99999;justify-content:center;align-items:center;padding:20px}
 #order-modal.open{display:flex}
 .modal-box{background:#0d0b1e;border:1px solid rgba(199,125,255,.4);box-shadow:0 0 50px rgba(199,125,255,.2);border-radius:16px;padding:36px 30px;max-width:420px;width:100%;position:relative;animation:mIn .3s ease}
@@ -92,6 +91,21 @@ body{background:#05040f;font-family:'Cormorant Garamond',serif;min-height:100vh;
 </style>
 </head>
 <body>
+
+<div id="order-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2>✦ ORDER ANIMATION</h2>
+    <form id="order-form">
+      <input type="text" name="name" placeholder="Your name" required />
+      <input type="email" name="email" placeholder="Your email" required />
+      <input type="text" name="subject" placeholder="Project type (animation, video...)" />
+      <textarea name="message" placeholder="Tell me about your project..." required></textarea>
+      <button type="submit" class="modal-submit">✦ Send Message</button>
+    </form>
+    <div class="modal-success">✦ Thank you! I'll get back to you soon 🚀</div>
+  </div>
+</div>
 
 <canvas id="stars"></canvas>
 <canvas id="planet-canvas"></canvas>
@@ -173,12 +187,12 @@ body{background:#05040f;font-family:'Cormorant Garamond',serif;min-height:100vh;
         <span class="link-arrow" id="contactArrow">↓</span>
       </div>
       <div class="expand-inner" id="contactExpand">
-        <a href="https://wacdcartoons.com/#contact" target="_blank" rel="noopener" class="expand-row">
+        <button onclick="event.stopPropagation();openModal()" class="expand-row">
           <span class="expand-row-icon">◎</span>
           <span class="expand-row-label">Order Animation</span>
           <span class="expand-row-arrow">→</span>
-        </a>
-        <a href="mailto:wacd.store@gmail.com" class="expand-row">
+        </button>
+        <a href="mailto:wacd.store@gmail.com" class="expand-row" onclick="event.stopPropagation()">
           <span class="expand-row-icon">✉</span>
           <span class="expand-row-label">Email Me</span>
           <span class="expand-row-arrow">→</span>
@@ -206,19 +220,15 @@ window.addEventListener('resize',rszP);
 function drawPlanet(){
   px.clearRect(0,0,pc.width,pc.height);
   const cx=pc.width*0.84,cy=pc.height*0.18,r=Math.min(pc.width,pc.height)*0.12;
-  // outer glow
   const g=px.createRadialGradient(cx,cy,r*.3,cx,cy,r*2);
   g.addColorStop(0,'rgba(155,93,229,0.1)');g.addColorStop(1,'rgba(0,0,0,0)');
   px.beginPath();px.arc(cx,cy,r*2,0,Math.PI*2);px.fillStyle=g;px.fill();
-  // body
   const pg=px.createRadialGradient(cx-r*.3,cy-r*.3,r*.1,cx,cy,r);
   pg.addColorStop(0,'rgba(110,60,200,0.5)');pg.addColorStop(.5,'rgba(55,18,110,0.42)');pg.addColorStop(1,'rgba(8,4,25,0.55)');
   px.beginPath();px.arc(cx,cy,r,0,Math.PI*2);px.fillStyle=pg;px.fill();
-  // surface bands
   px.save();px.beginPath();px.arc(cx,cy,r,0,Math.PI*2);px.clip();
   [0,1,2].forEach(i=>{px.beginPath();px.ellipse(cx,cy+r*(i*.2-.18),r,r*(.16+i*.05),0,0,Math.PI*2);px.strokeStyle=`rgba(180,120,255,${.1-i*.02})`;px.lineWidth=1;px.stroke()});
   px.restore();
-  // ring
   px.save();px.translate(cx,cy);px.scale(1,.26);
   px.beginPath();px.arc(0,0,r*1.55,0,Math.PI*2);px.strokeStyle='rgba(180,120,255,0.32)';px.lineWidth=2.5;px.stroke();
   px.beginPath();px.arc(0,0,r*1.78,0,Math.PI*2);px.strokeStyle='rgba(155,93,229,0.16)';px.lineWidth=1.5;px.stroke();
@@ -243,73 +253,19 @@ window.addEventListener('resize',()=>{rszD();mkD()});
 const rc=document.getElementById('rocket-canvas'),rx=rc.getContext('2d');
 function rszR(){rc.width=innerWidth;rc.height=innerHeight}rszR();
 window.addEventListener('resize',rszR);
-
-const comets=[
-  {x:-100,y:0,vx:2.2,vy:.5,len:85,w:1.8,c:'rgba(0,229,255'},
-  {x:-180,y:0,vx:1.7,vy:.2,len:65,w:1.4,c:'rgba(199,125,255'},
-  {x:-60,y:0,vx:2.6,vy:-.3,len:50,w:1,c:'rgba(255,182,39'},
-];
+const comets=[{x:-100,y:0,vx:2.2,vy:.5,len:85,w:1.8,c:'rgba(0,229,255'},{x:-180,y:0,vx:1.7,vy:.2,len:65,w:1.4,c:'rgba(199,125,255'},{x:-60,y:0,vx:2.6,vy:-.3,len:50,w:1,c:'rgba(255,182,39'}];
 function resetComet(cm){cm.x=-220;cm.y=Math.random()*rc.height;}
 comets.forEach(cm=>{cm.x=-Math.random()*400;cm.y=Math.random()*rc.height});
-
-let rkt={x:-80,y:0,vx:1.3,vy:0,done:false};
-let rktWait=0;
+let rkt={x:-80,y:0,vx:1.3,vy:0,done:false};let rktWait=0;
 function resetRocket(){rkt={x:-80,y:rc.height*(0.2+Math.random()*.6),vx:1.3+Math.random()*.5,vy:(Math.random()-.5)*.35,done:false};rktWait=0;}
 resetRocket();
-
-function drawRocketShape(x,y){
-  rx.save();rx.translate(x,y);
-  // flame flicker
-  rx.beginPath();rx.moveTo(-10,-3);rx.lineTo(-18+Math.random()*5,0);rx.lineTo(-10,3);rx.closePath();
-  rx.fillStyle='rgba(255,182,39,0.85)';rx.fill();
-  // body
-  rx.beginPath();rx.ellipse(0,0,10,5,0,0,Math.PI*2);
-  rx.fillStyle='rgba(235,228,248,0.88)';rx.fill();
-  // nose
-  rx.beginPath();rx.moveTo(10,0);rx.lineTo(18,-3);rx.lineTo(18,3);rx.closePath();
-  rx.fillStyle='rgba(255,79,160,0.92)';rx.fill();
-  // fins
-  rx.beginPath();rx.moveTo(-8,-5);rx.lineTo(-13,-9);rx.lineTo(-4,-5);rx.closePath();
-  rx.fillStyle='rgba(0,229,255,0.75)';rx.fill();
-  rx.beginPath();rx.moveTo(-8,5);rx.lineTo(-13,9);rx.lineTo(-4,5);rx.closePath();
-  rx.fillStyle='rgba(0,229,255,0.75)';rx.fill();
-  rx.restore();
-}
-
-function animScene(){
-  rx.clearRect(0,0,rc.width,rc.height);
-  // comets
-  for(const cm of comets){
-    cm.x+=cm.vx;cm.y+=cm.vy;
-    if(cm.x>rc.width+200)resetComet(cm);
-    const gr=rx.createLinearGradient(cm.x-cm.len,cm.y,cm.x,cm.y);
-    gr.addColorStop(0,`${cm.c},0)`);gr.addColorStop(1,`${cm.c},.75)`);
-    rx.beginPath();rx.moveTo(cm.x-cm.len,cm.y);rx.lineTo(cm.x,cm.y);
-    rx.strokeStyle=gr;rx.lineWidth=cm.w;rx.stroke();
-    rx.beginPath();rx.arc(cm.x,cm.y,cm.w*1.3,0,Math.PI*2);
-    rx.fillStyle=`${cm.c},.9)`;rx.fill();
-  }
-  // rocket
-  if(!rkt.done){
-    rkt.x+=rkt.vx;rkt.y+=rkt.vy;
-    drawRocketShape(rkt.x,rkt.y);
-    if(rkt.x>rc.width+100)rkt.done=true;
-  } else {
-    rktWait++;
-    if(rktWait>180)resetRocket();
-  }
-  requestAnimationFrame(animScene);
-}
+function drawRocketShape(x,y){rx.save();rx.translate(x,y);rx.beginPath();rx.moveTo(-10,-3);rx.lineTo(-18+Math.random()*5,0);rx.lineTo(-10,3);rx.closePath();rx.fillStyle='rgba(255,182,39,0.85)';rx.fill();rx.beginPath();rx.ellipse(0,0,10,5,0,0,Math.PI*2);rx.fillStyle='rgba(235,228,248,0.88)';rx.fill();rx.beginPath();rx.moveTo(10,0);rx.lineTo(18,-3);rx.lineTo(18,3);rx.closePath();rx.fillStyle='rgba(255,79,160,0.92)';rx.fill();rx.beginPath();rx.moveTo(-8,-5);rx.lineTo(-13,-9);rx.lineTo(-4,-5);rx.closePath();rx.fillStyle='rgba(0,229,255,0.75)';rx.fill();rx.beginPath();rx.moveTo(-8,5);rx.lineTo(-13,9);rx.lineTo(-4,5);rx.closePath();rx.fillStyle='rgba(0,229,255,0.75)';rx.fill();rx.restore();}
+function animScene(){rx.clearRect(0,0,rc.width,rc.height);for(const cm of comets){cm.x+=cm.vx;cm.y+=cm.vy;if(cm.x>rc.width+200)resetComet(cm);const gr=rx.createLinearGradient(cm.x-cm.len,cm.y,cm.x,cm.y);gr.addColorStop(0,`${cm.c},0)`);gr.addColorStop(1,`${cm.c},.75)`);rx.beginPath();rx.moveTo(cm.x-cm.len,cm.y);rx.lineTo(cm.x,cm.y);rx.strokeStyle=gr;rx.lineWidth=cm.w;rx.stroke();rx.beginPath();rx.arc(cm.x,cm.y,cm.w*1.3,0,Math.PI*2);rx.fillStyle=`${cm.c},.9)`;rx.fill();}if(!rkt.done){rkt.x+=rkt.vx;rkt.y+=rkt.vy;drawRocketShape(rkt.x,rkt.y);if(rkt.x>rc.width+100)rkt.done=true;}else{rktWait++;if(rktWait>180)resetRocket();}requestAnimationFrame(animScene);}
 animScene();
 
 // STAR DOTS
 const sd=document.getElementById('sdots');
-[{l:8,t:10,s:11,cl:'#ffb627',d:0},{l:88,t:8,s:9,cl:'#ff79c6',d:.8},{l:92,t:35,s:13,cl:'#ffb627',d:1.6},{l:5,t:55,s:9,cl:'#ffb627',d:2.4},{l:94,t:68,s:11,cl:'#ff79c6',d:.4},{l:10,t:82,s:9,cl:'#ffb627',d:1.2},{l:85,t:88,s:13,cl:'#ffb627',d:2},{l:50,t:5,s:8,cl:'#ff79c6',d:.6}].forEach((p,i)=>{
-  const e=document.createElement('div');e.className='sd';
-  e.style.cssText=`left:${p.l}%;top:${p.t}%;width:${p.s}px;height:${p.s}px;animation-delay:${p.d}s;animation-duration:${1.8+i*.35}s;`;
-  e.innerHTML=`<svg viewBox="0 0 20 20" fill="${p.cl}"><polygon points="10,1 12.9,7 19.5,7.6 14.5,12 16.2,18.5 10,15 3.8,18.5 5.5,12 0.5,7.6 7.1,7"/></svg>`;
-  sd.appendChild(e);
-});
+[{l:8,t:10,s:11,cl:'#ffb627',d:0},{l:88,t:8,s:9,cl:'#ff79c6',d:.8},{l:92,t:35,s:13,cl:'#ffb627',d:1.6},{l:5,t:55,s:9,cl:'#ffb627',d:2.4},{l:94,t:68,s:11,cl:'#ff79c6',d:.4},{l:10,t:82,s:9,cl:'#ffb627',d:1.2},{l:85,t:88,s:13,cl:'#ffb627',d:2},{l:50,t:5,s:8,cl:'#ff79c6',d:.6}].forEach((p,i)=>{const e=document.createElement('div');e.className='sd';e.style.cssText=`left:${p.l}%;top:${p.t}%;width:${p.s}px;height:${p.s}px;animation-delay:${p.d}s;animation-duration:${1.8+i*.35}s;`;e.innerHTML=`<svg viewBox="0 0 20 20" fill="${p.cl}"><polygon points="10,1 12.9,7 19.5,7.6 14.5,12 16.2,18.5 10,15 3.8,18.5 5.5,12 0.5,7.6 7.1,7"/></svg>`;sd.appendChild(e);});
 
 // TOGGLE
 function toggleContact(){
@@ -318,6 +274,32 @@ function toggleContact(){
   el.style.display=open?'none':'block';
   ar.textContent=open?'↓':'↑';
 }
+
+// MODAL
+function openModal(){
+  document.getElementById('order-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  document.getElementById('order-modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.getElementById('order-modal').addEventListener('click',function(e){
+  if(e.target===this)closeModal();
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()});
+document.getElementById('order-form').addEventListener('submit',function(e){
+  e.preventDefault();
+  fetch('https://formspree.io/f/xaqlqake',{method:'POST',body:new FormData(this),headers:{'Accept':'application/json'}})
+  .then(r=>{
+    if(r.ok){
+      this.style.display='none';
+      document.querySelector('.modal-success').style.display='block';
+      setTimeout(()=>{closeModal();setTimeout(()=>{this.style.display='';this.reset();document.querySelector('.modal-success').style.display='none';},400)},2500);
+    }else{alert('Something went wrong. Please try again.');}
+  })
+  .catch(()=>alert('Network error. Please try again.'));
+});
 
 // PARALLAX
 window.addEventListener('scroll',()=>{
