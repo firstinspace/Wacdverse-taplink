@@ -73,6 +73,22 @@ body{background:#05040f;font-family:'Cormorant Garamond',serif;min-height:100vh;
 .expand-row-label{font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;flex:1}
 .expand-row-arrow{font-family:'Share Tech Mono',monospace;font-size:.7rem;opacity:.5}
 .footer-tag{margin-top:2.2rem;font-family:'Share Tech Mono',monospace;font-size:.58rem;letter-spacing:.18em;color:rgba(138,127,160,.28);text-transform:uppercase;text-align:center}
+
+/* ── MODAL ── */
+#order-modal{display:none;position:fixed;inset:0;background:rgba(5,4,15,.92);z-index:99999;justify-content:center;align-items:center;padding:20px}
+#order-modal.open{display:flex}
+.modal-box{background:#0d0b1e;border:1px solid rgba(199,125,255,.4);box-shadow:0 0 50px rgba(199,125,255,.2);border-radius:16px;padding:36px 30px;max-width:420px;width:100%;position:relative;animation:mIn .3s ease}
+@keyframes mIn{from{opacity:0;transform:translateY(-24px)}to{opacity:1;transform:translateY(0)}}
+.modal-close{position:absolute;top:14px;right:18px;background:none;border:none;color:#c77dff;font-size:22px;cursor:pointer;line-height:1;text-shadow:0 0 8px #c77dff;transition:color .2s}
+.modal-close:hover{color:#fff}
+.modal-box h2{text-align:center;margin:0 0 22px;font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;letter-spacing:.08em;color:#c77dff;text-shadow:0 0 15px rgba(199,125,255,.5)}
+.modal-box input,.modal-box textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(199,125,255,.25);border-radius:8px;padding:11px 14px;color:#f0eaf8;font-size:.9rem;font-family:'Cormorant Garamond',serif;margin-bottom:14px;outline:none;transition:border-color .3s,box-shadow .3s;display:block}
+.modal-box input:focus,.modal-box textarea:focus{border-color:#c77dff;box-shadow:0 0 10px rgba(199,125,255,.2)}
+.modal-box input::placeholder,.modal-box textarea::placeholder{color:rgba(240,234,248,.3)}
+.modal-box textarea{height:110px;resize:vertical}
+.modal-submit{width:100%;padding:12px;border-radius:8px;background:linear-gradient(135deg,rgba(155,93,229,.8),rgba(199,125,255,.6));color:#fff;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(199,125,255,.5);cursor:pointer;box-shadow:0 0 18px rgba(199,125,255,.3);transition:transform .3s,box-shadow .3s}
+.modal-submit:hover{transform:scale(1.03);box-shadow:0 0 28px rgba(199,125,255,.5)}
+.modal-success{display:none;text-align:center;color:#c77dff;font-family:'Rajdhani',sans-serif;font-size:1.1rem;letter-spacing:.06em;text-shadow:0 0 12px rgba(199,125,255,.5);padding:20px 0}
 </style>
 </head>
 <body>
